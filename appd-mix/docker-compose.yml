@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+
+  tomcat9-jre8-alpine:
+    image: appdynamics/java:${APPD_AGENT_MAJOR_VERSION}_tomcat9-jre8
+    build:
+      context: .
+      dockerfile: ./tomcat/9/jre8/Dockerfile
+      args:
+        APPD_AGENT_VERSION:
+        APPD_AGENT_SHA256:
+
+  machine:
+    image: appdynamics/machine:${APPD_AGENT_MAJOR_VERSION}
+    build:
+      context: .
+      dockerfile: ./kafka/Dockerfile
+      args:
+        APPD_AGENT_VERSION:
+        APPD_AGENT_SHA256:
