@@ -2,20 +2,19 @@ version: '3'
 
 services:
 
-  tomcat9-jre8-alpine:
+  machine:
+    image: appdynamcis/machine:${APPD_AGENT_MAJOR_VERSION}_bundle
+    build:
+      context: .
+      dockerfile: ./machine/Dockerfile
+      args:
+        APPD_MACHINE_AGENT_VERSION:
+        APPD_MACHINE_AGENT_SHA256:
+  tomcat9-jre8:
     image: appdynamics/java:${APPD_AGENT_MAJOR_VERSION}_tomcat9-jre8
     build:
       context: .
       dockerfile: ./tomcat/9/jre8/Dockerfile
-      args:
-        APPD_AGENT_VERSION:
-        APPD_AGENT_SHA256:
-
-  machine:
-    image: appdynamics/machine:${APPD_AGENT_MAJOR_VERSION}
-    build:
-      context: .
-      dockerfile: ./kafka/Dockerfile
       args:
         APPD_AGENT_VERSION:
         APPD_AGENT_SHA256:
