@@ -1,14 +1,19 @@
 version: '3'
 
 services:
-
+  machine:
+    image: appdynamics/machine:${APPD_AGENT_MAJOR_VERSION}
+    build:
+      context: .
+      dockerfile: ./machine/Dockerfile
+      args:
+        APPD_MACHINE_AGENT_VERSION:
+        APPD_MACHINE_AGENT_SHA256:
   sidecar:
-    image: appdynamics/java:${APPD_AGENT_MAJOR_VERSION}_sidecar
+    image: appdynamics/tomcat9-jre8:${APPD_AGENT_MAJOR_VERSION}_sidecar
     build:
       context: .
       dockerfile: ./sidecar/Dockerfile
       args:
-        APPD_MACHINE_AGENT_VERSION:
-        APPD_MACHINE_AGENT_SHA256:
         APPD_AGENT_VERSION:
         APPD_AGENT_SHA256:
