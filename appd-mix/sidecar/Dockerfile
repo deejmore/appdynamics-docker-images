@@ -27,4 +27,4 @@ RUN echo "${APPD_AGENT_SHA256} *AppServerAgent-${APPD_AGENT_VERSION}.zip" >> app
 FROM tomcat:9-jre8
 RUN apt-get update && apt-get -y upgrade
 COPY --from=builder /tmp /opt/appdynamics
-COPY setenv.sh ${CATALINA_HOME}/bin/
+COPY setenv.sh ${CATALINA_HOME}/bi

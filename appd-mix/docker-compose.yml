@@ -3,12 +3,12 @@ version: '3'
 services:
 
   sidecar:
-    image: appdynamcis/docker:${APPD_AGENT_MAJOR_VERSION}_sidecar
+    image: appdynamics/docker:${APPD_AGENT_MAJOR_VERSION}_sidecar
     build:
       context: .
       dockerfile: ./sidecar/Dockerfile
       args:
         APPD_MACHINE_AGENT_VERSION:
         APPD_MACHINE_AGENT_SHA256:
-              APPD_AGENT_VERSION:
-              APPD_AGENT_SHA256:
+        APPD_AGENT_VERSION:
+        APPD_AGENT_SHA256:
