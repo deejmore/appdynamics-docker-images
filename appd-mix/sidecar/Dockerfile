@@ -8,7 +8,9 @@ ARG APPD_AGENT_VERSION
 ARG APPD_AGENT_SHA256
 
 RUN apt-get update && apt-get install -y --no-install-recommends  unzip \
-        && rm -rf /var/lib/apt/lists/*
+        && apt-get -y upgrade \
+        && apt-get install -y apt-utils && apt-get install -y iproute2 && apt-get install -y procps \
+        && apt-get install -y sysstat
 
 COPY machineagent-bundle-64bit-linux-${APPD_MACHINE_AGENT_VERSION}.zip /
 RUN echo "${APPD_MACHINE_AGENT_SHA256} *machineagent-bundle-64bit-linux-${APPD_MACHINE_AGENT_VERSION}.zip" >> appd_checksum \
@@ -16,7 +18,6 @@ RUN echo "${APPD_MACHINE_AGENT_SHA256} *machineagent-bundle-64bit-linux-${APPD_M
     && rm appd_checksum \
     && unzip -oq machineagent-bundle-64bit-linux-${APPD_MACHINE_AGENT_VERSION}.zip -d /tmp
 
-RUN apt-get update && apt-get -y upgrade && apt-get install -y unzip && apt-get install -y apt-utils && apt-get install -y iproute2 && apt-get install -y procps && apt-get install -y sysstat
 COPY --from=builder /tmp /opt/appdynamics
 
 CMD ["sh", "-c", "java ${MACHINE_AGENT_PROPERTIES} -jar /opt/appdynamics/machineagent.jar"]
