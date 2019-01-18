@@ -3,7 +3,7 @@ version: '3'
 services:
 
   sidecar:
-    image: appdynamics/docker:${APPD_AGENT_MAJOR_VERSION}_sidecar
+    image: appdynamics/java:${APPD_AGENT_MAJOR_VERSION}_sidecar
     build:
       context: .
       dockerfile: ./sidecar/Dockerfile
