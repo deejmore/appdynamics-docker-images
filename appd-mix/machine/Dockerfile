@@ -16,6 +16,4 @@ RUN echo "${APPD_MACHINE_AGENT_SHA256} *machineagent-bundle-64bit-linux-${APPD_M
     && rm appd_checksum \
     && unzip -oq machineagent-bundle-64bit-linux-${APPD_MACHINE_AGENT_VERSION}.zip -d /tmp
 
-COPY --from=builder /tmp /opt/appdynamics
-
 CMD ["sh", "-c", "java ${MACHINE_AGENT_PROPERTIES} -jar /opt/appdynamics/machineagent.jar"]

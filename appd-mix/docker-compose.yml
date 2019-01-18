@@ -3,6 +3,7 @@ version: '3'
 services:
   machine:
     image: appdynamics/machine:${APPD_AGENT_MAJOR_VERSION}
+    container_name: machineagent-bundle
     build:
       context: .
       dockerfile: ./machine/Dockerfile
@@ -11,6 +12,7 @@ services:
         APPD_MACHINE_AGENT_SHA256:
   sidecar:
     image: appdynamics/tomcat9-jre8:${APPD_AGENT_MAJOR_VERSION}_sidecar
+    container_name: sidecar_agent_repo
     build:
       context: .
       dockerfile: ./sidecar/Dockerfile
