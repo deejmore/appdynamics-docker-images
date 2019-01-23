@@ -1,3 +1,4 @@
 # Ignore Agent installers
 *.zip
 .sha256
+env
