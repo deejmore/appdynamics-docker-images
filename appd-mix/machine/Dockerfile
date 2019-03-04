@@ -1,19 +1,42 @@
 FROM openjdk:8-jre-slim AS builder
 
-MAINTAINER mark.prichard@appdynamics.com
+# Install required packages
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get install -y unzip && \
+    apt-get clean
 
-ARG APPD_MACHINE_AGENT_VERSION
-ARG APPD_MACHINE_AGENT_SHA256
+# Actual file paths passed via docker-compose.yml
+ARG MACHINE_AGENT_ZIP
+ARG MACHINE_AGENT_SHA256
+ARG MACHINE_AGENT_MONITOR
 
-COPY MachineAgent-${APPD_MACHINE_AGENT_VERSION}.zip /
-RUN echo "${APPD_MACHINE_AGENT_SHA256} *MachineAgent-${APPD_MACHINE_AGENT_VERSION}.zip" >> appd_checksum \
-    && sha256sum -c appd_checksum \
-    && rm appd_checksum \
-    && unzip -oq MachineAgent-${APPD_MACHINE_AGENT_VERSION}.zip -d /tmp
+# Canonical filenames used in startup script
+ENV MA_ZIP MachineAgentBundle.zip
+ENV MA_SHA256 MachineAgentBundle.checksum
+ENV MA_MONITOR MachinAgentMonitor.zip
 
+COPY ${MACHINE_AGENT_ZIP} /${MA_ZIP}
+RUN echo "${MACHINE_AGENT_SHA256} *${MA_ZIP}" >> /${MA_SHA256}
 
-FROM openjdk:8-jre-slim
-RUN apt-get update && apt-get -y upgrade && apt-get install -y unzip && apt-get install -y apt-utils && apt-get install -y iproute2 && apt-get install -y procps && apt-get install -y sysstat
-COPY --from=builder /tmp /opt/appdynamics
+#COPIED OUT
+RUN sha256sum -c ${MA_SHA256}
 
-CMD ["sh", "-c", "java ${MACHINE_AGENT_PROPERTIES} -jar /opt/appdynamics/machineagent.jar"]
+COPY ${MACHINE_AGENT_MONITOR} /${MA_MONITOR}
+
+# Install AppDynamics Machine Agent
+ENV MACHINE_AGENT_HOME /opt/appdynamics/machine-agent/
+RUN mkdir -p ${MACHINE_AGENT_HOME} && \
+    unzip -oq /${MA_ZIP} -d ${MACHINE_AGENT_HOME} && \
+    rm /${MA_ZIP}
+RUN unzip -oq /${MA_MONITOR} -d ${MACHINE_AGENT_HOME}\monitors
+
+# Include start script to configure and start MA at runtime
+ADD start-appdynamics ${MACHINE_AGENT_HOME}
+RUN chmod 744 ${MACHINE_AGENT_HOME}/start-appdynamics
+
+# Configure and Run AppDynamics Machine Agent
+CMD "${MACHINE_AGENT_HOME}/start-appdynamics"
+
+# Analytics Agent listener
+EXPOSE 9090

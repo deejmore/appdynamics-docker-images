@@ -10,7 +10,7 @@ services:
       args:
         APPD_MACHINE_AGENT_VERSION:
         APPD_MACHINE_AGENT_SHA256:
-  sidecar:
+        APPD_MACHINE_AGENT_MONITOR:
     image: appdynamics/tomcat9-jre8:${APPD_AGENT_MAJOR_VERSION}_sidecar
     container_name: sidecar_agentrepo
     build:
